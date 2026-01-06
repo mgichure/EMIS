@@ -276,7 +276,7 @@ export const DocumentUpload = ({
                       size="sm"
                       onClick={() => {
                         const url = document.preview || URL.createObjectURL(document.data);
-                        const link = document.createElement('a');
+                        const link = window.document.createElement('a');
                         link.href = url;
                         link.download = document.name;
                         link.click();

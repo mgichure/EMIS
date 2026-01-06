@@ -53,14 +53,14 @@ export const BulkActionsBar = ({ schedule, candidates, onRefresh }: BulkActionsB
           'Status': candidate.status,
           'Notes': candidate.notes || '',
         };
-      }).filter(Boolean);
+      }).filter((row): row is NonNullable<typeof row> => row !== null);
 
       if (csvData.length === 0) {
         alert('No data to export');
         return;
       }
 
-      const headers = Object.keys(csvData[0]);
+      const headers = Object.keys(csvData[0]) as Array<keyof typeof csvData[0]>;
       const csvContent = [
         headers.join(','),
         ...csvData.map(row => headers.map(header => `"${row[header]}"`).join(','))

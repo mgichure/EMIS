@@ -105,7 +105,7 @@ export default function InterviewsPage() {
   const handleSaveRubric = async (rubric: InterviewRubric) => {
     try {
       if (selectedRubric) {
-        await db.interviewRubrics.update(selectedRubric.id!, rubric);
+        await db.interviewRubrics.put({ ...rubric, id: selectedRubric.id });
       } else {
         await db.interviewRubrics.add(rubric);
       }
@@ -364,7 +364,7 @@ export default function InterviewsPage() {
       </div>
 
       <RubricEditor
-        rubric={selectedRubric}
+        rubric={selectedRubric ?? undefined}
         onSave={handleSaveRubric}
         onCancel={handleBackToList}
       />

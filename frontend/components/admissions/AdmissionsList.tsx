@@ -74,6 +74,8 @@ export const AdmissionsList = ({
   const [rowSelection, setRowSelection] = useState({});
   const [selectedApplication, setSelectedApplication] = useState<AdmissionApplication | null>(null);
   const [isDecisionDialogOpen, setIsDecisionDialogOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>(filters?.status || 'all');
+  const [searchQuery, setSearchQuery] = useState<string>(filters?.search || '');
 
   const applications = useLiveQuery(() => db.applications.toArray());
   const intakes = useLiveQuery(() => db.intakes.toArray());
@@ -81,12 +83,12 @@ export const AdmissionsList = ({
 
   // Apply filters to applications
   const filteredApplications = useMemo(() => {
-    if (!applications || !filters) return applications;
+    if (!applications) return [];
 
     return applications.filter(app => {
       // Search filter
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
         const fullName = `${app.personalInfo.firstName} ${app.personalInfo.lastName}`.toLowerCase();
         const email = app.personalInfo.email.toLowerCase();
         if (!fullName.includes(searchLower) && !email.includes(searchLower)) {
@@ -95,22 +97,22 @@ export const AdmissionsList = ({
       }
 
       // Status filter
-      if (filters.status && app.status !== filters.status) {
+      if (statusFilter && statusFilter !== 'all' && app.status !== statusFilter) {
         return false;
       }
 
       // Intake filter
-      if (filters.intakeId && app.intakeId !== filters.intakeId) {
+      if (filters?.intakeId && app.intakeId !== filters.intakeId) {
         return false;
       }
 
       // Program filter
-      if (filters.programId && app.programId !== filters.programId) {
+      if (filters?.programId && app.programId !== filters.programId) {
         return false;
       }
 
       // Date range filter
-      if (filters.dateFrom || filters.dateTo) {
+      if (filters?.dateFrom || filters?.dateTo) {
         const appDate = new Date(app.createdAt);
         if (filters.dateFrom && appDate < new Date(filters.dateFrom)) {
           return false;
@@ -122,7 +124,7 @@ export const AdmissionsList = ({
 
       return true;
     });
-  }, [applications, filters]);
+  }, [applications, filters, statusFilter, searchQuery]);
 
   const columns: ColumnDef<AdmissionApplication>[] = [
     {
@@ -300,7 +302,7 @@ export const AdmissionsList = ({
 
 
   const table = useReactTable({
-    data: filteredApplications,
+    data: filteredApplications ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

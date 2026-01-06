@@ -39,7 +39,7 @@ export interface AdmissionApplication {
   intakeId: string;
   programId: string;
   documents: string[]; // Array of document IDs
-  status: 'draft' | 'submitted' | 'under_review' | 'accepted' | 'rejected' | 'waitlisted';
+  status: 'draft' | 'submitted' | 'under_review' | 'accepted' | 'rejected' | 'waitlisted' | 'enrolled';
   decisions: AdmissionDecision[];
   timeline: TimelineEvent[];
   syncStatus: 'pending' | 'synced' | 'failed';

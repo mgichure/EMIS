@@ -43,45 +43,45 @@ export default function AdmissionDetailPage() {
 
   // Fetch application and related data
   const application = useLiveQuery(() => 
-    applicationId ? db.applications.get(applicationId) : null
+    applicationId ? db.applications.get(applicationId) : undefined
   );
   const intake = useLiveQuery(() => 
-    application?.intakeId ? db.intakes.get(application.intakeId) : null
+    application?.intakeId ? db.intakes.get(application.intakeId) : undefined
   );
   const program = useLiveQuery(() => 
-    application?.programId ? db.programs.get(application.programId) : null
+    application?.programId ? db.programs.get(application.programId) : undefined
   );
   const documents = useLiveQuery(() => 
     applicationId ? db.documents.where('applicationId').equals(applicationId).toArray() : []
   );
   const studentProfile = useLiveQuery(() => 
-    applicationId ? db.studentProfiles.where('admissionId').equals(applicationId).first() : null
+    applicationId ? db.studentProfiles.where('admissionId').equals(applicationId).first() : undefined
   );
 
-  const handleDecisionUpdate = async (decision: { decision: string; reason: string; notes?: string }) => {
+  const handleDecisionUpdate = async (decision: 'accepted' | 'rejected', notes: string) => {
     if (!application) return;
 
     try {
-      const updatedApplication = {
+      const updatedApplication: AdmissionApplication = {
         ...application,
-        status: decision.decision,
+        status: decision,
         decisions: [
           ...(application.decisions || []),
           {
             id: `decision_${Date.now()}`,
-            decision: decision.decision,
-            reason: decision.reason,
+            decision: decision,
+            reason: notes || `Application ${decision}`,
             decisionBy: 'Current User', // TODO: Get from auth context
             decisionDate: new Date(),
-            notes: decision.notes
+            notes: notes
           }
         ],
         timeline: [
           ...(application.timeline || []),
           {
             id: `timeline_${Date.now()}`,
-            action: `Status changed to ${decision.decision}`,
-            description: `Application ${decision.decision} - ${decision.reason}`,
+            action: `Status changed to ${decision}`,
+            description: `Application ${decision} - ${notes || 'No notes provided'}`,
             timestamp: new Date(),
             userId: 'Current User', // TODO: Get from auth context
             metadata: { decision, previousStatus: application.status }

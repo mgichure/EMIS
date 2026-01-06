@@ -53,10 +53,10 @@ export const StudentConversionDialog = ({
 
   // Fetch intake and program details
   const intake = useLiveQuery(() => 
-    application?.intakeId ? db.intakes.get(application.intakeId) : null
+    application?.intakeId ? db.intakes.get(application.intakeId) : undefined
   );
   const program = useLiveQuery(() => 
-    application?.programId ? db.programs.get(application.programId) : null
+    application?.programId ? db.programs.get(application.programId) : undefined
   );
 
   useEffect(() => {

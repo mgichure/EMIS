@@ -64,7 +64,7 @@ export const CandidateGrid = ({
   );
   const applications = useLiveQuery(() => db.applications.toArray());
   const rubric = useLiveQuery(() => 
-    schedule?.rubricId ? db.interviewRubrics.get(schedule.rubricId) : null
+    schedule?.rubricId ? db.interviewRubrics.get(schedule.rubricId) : undefined
   );
 
   const filteredCandidates = useMemo(() => {
