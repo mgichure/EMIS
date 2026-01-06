@@ -3,17 +3,26 @@ module.exports = {
     {
       name: 'frontend',
       cwd: './frontend',
-      script: 'npm',
+      script: 'pnpm',
       args: 'start',
+      interpreter: 'none',
       env: {
         NODE_ENV: 'production',
         PORT: 3000
-      }
+      },
+      error_file: './logs/frontend-error.log',
+      out_file: './logs/frontend-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: true,
+      max_restarts: 10,
+      min_uptime: '10s'
     },
     {
       name: 'backend',
       cwd: './backend',
-      script: './dist/main.js',
+      script: 'node',
+      args: 'dist/main.js',
       env: {
         NODE_ENV: 'production',
         PORT: 3001,
@@ -24,9 +33,16 @@ module.exports = {
         JWT_REFRESH_TOKEN_EXPIRATION_MS: '86400000',
         GOOGLE_AUTH_CLIENT_ID: 'your-google-client-id',
         GOOGLE_AUTH_CLIENT_SECRET: 'your-google-client-secret',
-        GOOGLE_AUTH_REDIRECT_URI: 'http://ect.cognitron.co.ke/auth/google/callback',
-        AUTH_UI_REDIRECT: 'http://ect.cognitron.co.ke'
-      }
+        GOOGLE_AUTH_REDIRECT_URI: 'http://localhost:3001/api/auth/google/callback',
+        AUTH_UI_REDIRECT: 'http://localhost:3000'
+      },
+      error_file: './logs/backend-error.log',
+      out_file: './logs/backend-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: true,
+      max_restarts: 10,
+      min_uptime: '10s'
     }
   ]
 };
